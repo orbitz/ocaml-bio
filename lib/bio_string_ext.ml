@@ -36,7 +36,7 @@ let get_string_between haystack startstr endstr =
 (* Not sure if it is a good idea to expose sidx *)
 let rec split ?(sidx = 0) str spl  =
   match try Some (find_from str spl sidx) with Not_found -> None with
-      Some idx ->
+    | Some idx ->
 	String.sub str sidx (idx - sidx) :: split str spl ~sidx:(idx + String.length spl)
     | None -> [String.sub str sidx (String.length str - sidx)]
 

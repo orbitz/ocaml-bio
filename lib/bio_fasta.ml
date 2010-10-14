@@ -9,7 +9,7 @@ type fasta = Header of string | Sequence of string
 let rec read_fasta_sequence f curdata sin =
   if curdata = "" then
     match Seq.next sin with
-	Some d -> read_fasta_sequence f d sin
+      | Some d -> read_fasta_sequence f d sin
       | None -> [< >]
   else if String_ext.contains curdata '>' && String_ext.index curdata '>' > 0 then
     let idx = String_ext.index curdata '>' in
@@ -30,7 +30,7 @@ let rec extract_header curdata sin =
      String_ext.sub curdata (idx + 1) (String_ext.length curdata - (idx + 1)))
   else
     match Seq.next sin with
-	Some d -> extract_header (curdata ^ d) sin
+      | Some d -> extract_header (curdata ^ d) sin
       | None -> (curdata, "")
 
 
@@ -44,7 +44,7 @@ let rec read_fasta_header curdata sin =
     [< 'Header header; read_fasta_sequence read_fasta_header rest sin >]
   else
     match Seq.next sin with
-	Some d -> read_fasta_header (curdata ^ d) sin
+      | Some d -> read_fasta_header (curdata ^ d) sin
       | None -> raise (Failure ("Unknown data: " ^ curdata))
     
     
