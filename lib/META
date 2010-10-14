@@ -1,0 +1,6 @@
+name="ocaml-bio"
+version="1.0.0"
+description="ocaml-bio - Bio stuff for ocaml"
+requires="seq"
+archive(byte)="ocaml-bio.cma"
+archive(native)="ocaml-bio.cmxa"
