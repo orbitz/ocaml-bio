@@ -1,5 +1,6 @@
 (*pp camlp4o *)
 open Ort
+open Ort.Function
 
 module String_ext = Bio_string_ext
 
@@ -60,6 +61,28 @@ let read sin =
 let read_file ?(chunk_size = 1000) fname =
   read (Lazy_io.read_file_chunks ~close:true chunk_size (open_in fname))
 
+let read_strict sin =
+  let rec strict_sequence accum sin =
+    match Seq.next sin with
+      | Some (Header header) when Buffer.length accum = 0 ->
+	[< 'Header header; strict_sequence (Buffer.create 400) sin >]
+      | Some (Header header) ->
+	let seq = Buffer.contents accum in
+	[< 'Sequence seq; 'Header header; strict_sequence (Buffer.create 400) sin >]
+      | Some (Sequence seq) -> begin
+	Buffer.add_string accum seq;
+	strict_sequence accum sin
+      end
+      | None when Buffer.length accum = 0 ->
+	[< >]
+      | None ->
+	let seq = Buffer.contents accum in
+	[< 'Sequence seq >]
+  in
+  read_fasta_header "" sin |> strict_sequence (Buffer.create 400)
+
+let read_file_strict ?(chunk_size = 1000) fname =
+  read_strict (Lazy_io.read_file_chunks ~close:true chunk_size (open_in fname))
 
 let rec to_seq sin =
   match Seq.next sin with

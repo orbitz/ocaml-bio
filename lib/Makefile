@@ -14,7 +14,7 @@ PACKS = seq
 
 LIBINSTALL_FILES = bio_string_ext.mli bio_string_ext.cmi \
 	bio_fasta.mli bio_fasta.cmi \
-	bio_genbank.mli bio_genbacnk.cmi \
+	bio_genbank.mli bio_genbank.cmi \
 	bio_csv.mli bio_csv.cmi \
 	bio.mli bio.cmi \
 	ocaml_bio.cma ocaml_bio.cmxa ocaml_bio.a
