@@ -10,6 +10,7 @@ SOURCES = bio_string_ext.ml bio_string_ext.mli \
 
 RESULT  = ocaml_bio
 
+LIBS = str
 PACKS = seq
 
 LIBINSTALL_FILES = bio_string_ext.mli bio_string_ext.cmi \
