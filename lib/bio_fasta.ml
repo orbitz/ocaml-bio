@@ -27,7 +27,7 @@ let rec read_fasta_sequence f curdata sin =
 let rec extract_header curdata sin =
   if String_ext.contains curdata '\n' then
     let idx = String_ext.index curdata '\n' in
-    (String_ext.sub curdata 0 idx, 
+    (String_ext.sub curdata 1 idx, 
      String_ext.sub curdata (idx + 1) (String_ext.length curdata - (idx + 1)))
   else
     match Seq.next sin with
