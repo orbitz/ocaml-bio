@@ -12,6 +12,10 @@ type distance = string
 type newick_leaf = (name * distance)
 
 type 'a tree = 
-  | Leaf ('a tree list)
-  | Tree ('a tree)
+  | Leaf 'a
+  | Tree ('a tree list)
+
+type newick_tree = newick_leaf tree
+
+
 
