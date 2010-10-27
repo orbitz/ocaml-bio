@@ -43,14 +43,14 @@ let string_of_list l =
 let is_digit = List.mem ~set:['0'; '1'; '2'; '3'; '4'; '5'; '6'; '7'; '8'; '9']
 
 let rec newick = parser
-  | [< ''('; t = tree; '')'; '';' >] -> Newick t
+  | [< _ = whitespace; ''('; _ = whitespace; t = tree; _ = whitespace; '')'; _ = whitespace; '';'; _ = whitespace >] -> Newick t
 and tree = parser
-  | [< e = entry; es = entry_aux >] -> e::es
+  | [< e = entry; _ = whitespace; es = entry_aux >] -> e::es
 and entry = parser
-  | [< ''('; t = tree; '')'; '':'; d = distance >] -> Tree (t, d)
+  | [< ''('; _ = whitespace; t = tree; _ = whitespace; '')'; '':'; d = distance; _ = whitespace >] -> Tree (t, d)
   | [< id = identifier; '':'; d = distance >] -> Leaf (id, d)
 and entry_aux = parser
-  | [< '','; e = entry; es = entry_aux >] -> e::es
+  | [< '','; _ = whitespace; e = entry; es = entry_aux >] -> e::es
   | [< >] -> []
 and identifier s = s |> Seq.take_while ~f:((<>) ':') |> Seq.to_list |> string_of_list
 and distance s = 
