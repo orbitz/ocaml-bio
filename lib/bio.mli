@@ -133,3 +133,16 @@ module String_ext :
     val rtrim : ?f:(char -> bool) -> string -> string
     val trim : ?f:(char -> bool) -> string -> string
   end
+module Newick :
+  sig
+    type identifier = string
+    type distance = float
+    type newick_leaf = identifier * distance
+    type 'a tree =
+      'a Bio_newick.tree =
+        Leaf of 'a
+      | Tree of ('a tree list * distance)
+      | Newick of 'a tree list
+    type newick_tree = newick_leaf tree
+    val parse : char Stream.t -> newick_leaf tree
+  end

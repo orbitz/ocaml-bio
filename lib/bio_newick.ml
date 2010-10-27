@@ -1,3 +1,4 @@
+(*pp camlp4o *)
 (*
  * Parses Newick style trees
  *)
@@ -25,49 +26,38 @@ type identifier = string
  *)
 type distance = float
 
-type newick_leaf = (identifier * distance option)
+type newick_leaf = (identifier * distance)
 
 type 'a tree = 
   | Leaf of 'a
-  | Tree of ('a tree list * distance option)
+  | Tree of ('a tree list * distance)
   | Newick of 'a tree list
 
 type newick_tree = newick_leaf tree
 
-exception ParseError of string
+let string_of_list l =
+  let b = Buffer.create (List.length l) in
+  l |> List.iter ~f:(Buffer.add_char b);
+  Buffer.contents b
 
-let is_whitespace = flip List.mem [' '; '\t'; '\n']
+let is_digit = List.mem ~set:['0'; '1'; '2'; '3'; '4'; '5'; '6'; '7'; '8'; '9']
 
-let read_all_whitespace = Seq.drop_while ~f:is_whitespace
+let rec newick = parser
+  | [< ''('; t = tree; '')'; '';' >] -> Newick t
+and tree = parser
+  | [< e = entry; es = entry_aux >] -> e::es
+and entry = parser
+  | [< ''('; t = tree; '')'; '':'; d = distance >] -> Tree (t, d)
+  | [< id = identifier; '':'; d = distance >] -> Leaf (id, d)
+and entry_aux = parser
+  | [< '','; e = entry; es = entry_aux >] -> e::es
+  | [< >] -> []
+and identifier s = s |> Seq.take_while ~f:((<>) ':') |> Seq.to_list |> string_of_list
+and distance s = 
+  let floating_point c = is_digit c || c = '-' || c = '.' in
+  s |> Seq.take_while ~f:floating_point |> Seq.to_list |> string_of_list |> float_of_string
+and whitespace = 
+  let is_whitespace = List.mem ~set:[' '; '\t'; '\n'] in
+  Seq.drop_while ~f:is_whitespace
 
-
-
-let rec read_tree s =
-  let rec rt t s =
-    let (e, ns) = read_entry s in
-    let ns' = read_all_whitespace ns in
-    match Seq.next ns' with
-      | Some '(' ->
-	let (nt, ns) = read_tree s in
-	
-      | Some ',' ->
-	rt (e::t) ns'
-      | Some x ->
-	(t, [< 'x; ns' >])
-  in
-  rt [] s
-
-let newick s =
-  match Seq.next s with
-    | Some '(' ->
-      let (t, ns) = read_tree s in
-      finish_newick t ns
-    | Some x ->
-      raise (ParseError (String.make 1 x))
-    | None ->
-      Newick []
-      
-let parse s =
-  let (t, s) = read_tree (Tree []) s in
-  
-
+let parse s = newick s
