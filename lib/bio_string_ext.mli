@@ -32,8 +32,8 @@ external unsafe_fill : string -> int -> int -> char -> unit
 val compare_subs_ : string -> string -> int -> int -> int -> int -> bool
 val compare_subs : string -> string -> int -> int -> bool
 val startswith : string -> string -> bool
-val find_from : string -> string -> int -> int
-val find : string -> string -> int
+val find_from : string -> needle:string -> int -> int
+val find : string -> needle:string -> int
 val get_string_between : string -> string -> string -> string
 val split : ?sidx:int -> string -> string -> string list
 val whitespace : char -> bool

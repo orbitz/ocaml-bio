@@ -15,16 +15,16 @@ let startswith large s =
     
     
 (* Find a string *)
-let rec find_from haystack needle sidx = 
+let rec find_from haystack ~needle sidx = 
   let idx = index_from haystack sidx needle.[0]
   in
   if compare_subs haystack needle idx 0 then
     idx
   else
-    find_from haystack needle (idx + 1)
+    find_from haystack ~needle:needle (idx + 1)
       
-let find haystack needle =
-  find_from haystack needle 0
+let find haystack ~needle =
+  find_from haystack ~needle:needle 0
     
 let get_string_between haystack startstr endstr =
   let sidx = (find haystack startstr) + (length startstr)
