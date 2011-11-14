@@ -54,7 +54,7 @@ and entry_aux = parser
   | [< >] -> []
 and identifier s = s |> Seq.take_while ~f:((<>) ':') |> Seq.to_list |> string_of_list
 and distance s = 
-  let floating_point c = is_digit c || c = '-' || c = '.' in
+  let floating_point c = is_digit c || c = '-' || c = '.' || c = 'e' in
   s |> Seq.take_while ~f:floating_point |> Seq.to_list |> string_of_list |> float_of_string
 and whitespace = 
   let is_whitespace = List.mem ~set:[' '; '\t'; '\n'] in
